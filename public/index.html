@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student & Doctor server</title>
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+  <div class="section">
+    <h2>Add Hardcoded Student</h2>
+    <button onclick="addHardcodedStudent()">Add Hardcoded</button>
+  </div>
+
+  <div class="section">
+    <h2>Add Student</h2>
+    <input id="s_name" placeholder="Name">
+    <input id="s_age" placeholder="Age" type="number">
+    <input id="s_level" placeholder="Level">
+    <input id="s_address" placeholder="Address">
+    <button onclick="addStudent()">Add Student</button>
+  </div>
+
+  <div class="section">
+    <h2>Delete Student by Name</h2>
+    <input id="s_del_name" placeholder="Student Name">
+    <button onclick="deleteStudent()">Delete Student</button>
+  </div>
+
+  <div class="section">
+    <h2>Get All Students</h2>
+    <button onclick="getStudents()">Load Students</button>
+    <div class="output" id="studentsOutput"></div>
+  </div>
+
+  <div class="section">
+    <h2>Add Doctor</h2>
+    <input id="d_name" placeholder="Name">
+    <input id="d_age" placeholder="Age" type="number">
+    <input id="d_phone" placeholder="Phone">
+    <button onclick="addDoctor()">Add Doctor</button>
+  </div>
+
+  <div class="section">
+    <h2>Update Doctor Name</h2>
+    <input id="d_old_name" placeholder="Old Name">
+    <input id="d_new_name" placeholder="New Name">
+    <button onclick="updateDoctorName()">Update Name</button>
+  </div>
+
+  <div class="section">
+    <h2>Get All Doctors</h2>
+    <button onclick="getDoctors()">Load Doctors</button>
+    <div class="output" id="doctorsOutput"></div>
+  </div>
+
+  <div class="section">
+    <h2>Get All Students and Doctors</h2>
+    <button onclick="getAll()">Load All</button>
+    <div class="output" id="allOutput"></div>
+  </div>
+
+  <script>
+    const api = "http://localhost:3000";
+
+    async function addHardcodedStudent() {
+      const res = await fetch(api + "/student/hardcoded", { method: "POST" });
+      const data = await res.json();
+      alert("Hardcoded Student Added: " + JSON.stringify(data, null, 2));
+    }
+
+    async function addStudent() {
+      const body = {
+        name: document.getElementById("s_name").value,
+        age: document.getElementById("s_age").value,
+        level: document.getElementById("s_level").value,
+        address: document.getElementById("s_address").value,
+      };
+      const res = await fetch(api + "/student", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      alert("Student Added: " + JSON.stringify(data, null, 2));
+    }
+
+    async function deleteStudent() {
+      const name = document.getElementById("s_del_name").value;
+      const res = await fetch(api + "/student/" + name, { method: "DELETE" });
+      const data = await res.json();
+      alert("Deleted: " + JSON.stringify(data, null, 2));
+    }
+
+    async function getStudents() {
+      const res = await fetch(api + "/students");
+      const data = await res.json();
+      document.getElementById("studentsOutput").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function addDoctor() {
+      const res = await fetch(api + `/doctor?name=${document.getElementById("d_name").value}&age=${document.getElementById("d_age").value}&phone=${document.getElementById("d_phone").value}`, {
+        method: "POST"
+      });
+      const data = await res.json();
+      alert("Doctor Added: " + JSON.stringify(data, null, 2));
+    }
+
+    async function updateDoctorName() {
+      const res = await fetch(api + `/doctor/update-name?oldName=${document.getElementById("d_old_name").value}&newName=${document.getElementById("d_new_name").value}`, {
+        method: "PUT"
+      });
+      const data = await res.json();
+      alert("Updated: " + JSON.stringify(data, null, 2));
+    }
+
+    async function getDoctors() {
+      const res = await fetch(api + "/doctors");
+      const data = await res.json();
+      document.getElementById("doctorsOutput").textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getAll() {
+      const res = await fetch(api + "/all");
+      const data = await res.json();
+      document.getElementById("allOutput").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
